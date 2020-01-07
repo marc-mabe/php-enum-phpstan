@@ -1,6 +1,7 @@
 # hidden files
 .*
 !.gitignore
+!.travis.yml
 
 #composer
 composer.lock

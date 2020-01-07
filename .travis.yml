@@ -1,0 +1,59 @@
+sudo: false
+language: php
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - $HOME/.local
+    - $HOME/ocular.phar
+
+env:
+  - PREFER_LOWEST=no
+  - PREFER_LOWEST=yes
+
+matrix:
+  fast_finish: true
+  include:
+    - php: 7.1
+      env:
+        - CODE_COVERAGE="1"
+    - php: 7.2
+      env:
+        - CODE_COVERAGE="1"
+    - php: 7.3
+      env:
+        - CODE_COVERAGE="1"
+    - php: 7.4
+      env:
+        - CODE_COVERAGE="1"
+    - php: nightly
+  allow_failures:
+    - php: nightly
+
+install:
+  - if [ "${CODE_COVERAGE}" != "1" ]; then
+    phpenv config-rm xdebug.ini || return 0;
+    fi
+  - if [ "${CODE_COVERAGE}" == "1" ]; then
+    wget -q -N -t 3 --retry-connrefused 'https://scrutinizer-ci.com/ocular.phar' || return 0;
+    fi
+  - if test "$PREFER_LOWEST" = yes ; then
+    composer update --prefer-dist --prefer-lowest;
+    else
+    composer install --prefer-dist;
+    fi
+
+script:
+  - if [ "$CODE_COVERAGE" == "1" ]; then
+    php -d 'zend.assertions=1' vendor/bin/phpunit --verbose --coverage-text --coverage-clover=coverage.clover;
+    else
+    php -d 'zend.assertions=1' vendor/bin/phpunit --verbose;
+    fi
+
+after_script:
+  - if [ "${CODE_COVERAGE}" == "1" ]; then
+    php ocular.phar code-coverage:upload --format=php-clover coverage.clover;
+    fi
+
+notifications:
+  email: false
