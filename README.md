@@ -10,3 +10,18 @@
 > of each line of the code can be checked before you run the actual line.  
 
 This PHPStan extension makes enumerator accessor methods known to PHPStan.
+
+## Install
+
+Install via [Composer](https://getcomposer.org)
+
+```
+composer require --dev marc-mabe/php-enum-phpstan
+```
+
+and include extension.neon in your project's PHPStan config
+
+```
+includes:
+  - vendor/marc-mabe/php-enum-phpstan/extension.neon
+```
