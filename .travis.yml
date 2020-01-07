@@ -7,12 +7,12 @@ cache:
     - $HOME/.local
     - $HOME/ocular.phar
 
-env:
-  - PREFER_LOWEST=yes
-
 matrix:
   fast_finish: true
   include:
+    - php: 7.1
+      env:
+        - PREFER_LOWEST="1"
     - php: 7.1
       env:
         - CODE_COVERAGE="1"
@@ -36,7 +36,7 @@ install:
   - if [ "${CODE_COVERAGE}" == "1" ]; then
     wget -q -N -t 3 --retry-connrefused 'https://scrutinizer-ci.com/ocular.phar' || return 0;
     fi
-  - if test "$PREFER_LOWEST" = yes ; then
+  - if [ "$PREFER_LOWEST" == "1" ]; then
     composer update --prefer-dist --prefer-lowest;
     else
     composer install --prefer-dist;
