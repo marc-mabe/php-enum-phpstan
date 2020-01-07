@@ -86,17 +86,24 @@ class EnumMethodReflection implements MethodReflection
 
     public function getDocComment(): ?string
     {
-        return null;
+        $docComment = $this->classReflection->getConstant($this->name)->getDocComment();
+
+        if ($docComment) {
+            // remove @var annotation of constant definition
+            $docComment = preg_replace('/@var.*/', '', $docComment);
+        }
+
+        return $docComment;
     }
 
     public function isDeprecated(): TrinaryLogic
     {
-        return TrinaryLogic::createNo();
+        return $this->classReflection->getConstant($this->name)->isDeprecated();
     }
 
     public function getDeprecatedDescription(): ?string
     {
-        return null;
+        return $this->classReflection->getConstant($this->name)->getDeprecatedDescription();
     }
 
     public function isFinal(): TrinaryLogic

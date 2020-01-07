@@ -6,10 +6,12 @@ namespace MabeEnumPHPStanTest;
 
 use MabeEnumPHPStan\EnumMethodReflection;
 use MabeEnumPHPStan\EnumMethodsClassReflectionExtension;
+use MabeEnumPHPStanTest\Assets\DeprecatedEnum;
 use MabeEnumPHPStanTest\Assets\NotAnEnum;
 use MabeEnumPHPStanTest\Assets\StrEnum;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Testing\TestCase;
+use PHPStan\TrinaryLogic;
 use PHPStan\Type\VerbosityLevel;
 
 class EnumMethodReflectionTest extends TestCase
@@ -69,5 +71,41 @@ class EnumMethodReflectionTest extends TestCase
         $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
 
         $this->assertSame(StrEnum::class, $parametersAcceptor->getReturnType()->describe(VerbosityLevel::value()));
+    }
+
+    public function testGetDocComment()
+    {
+        $classReflection = $this->broker->getClass(StrEnum::class);
+        $docMethodRefl = $this->reflectionExtension->getMethod($classReflection, 'STR');
+        $noDocMethodRefl = $this->reflectionExtension->getMethod($classReflection, 'NO_DOC_BLOCK');
+
+        // return null on no doc block
+        $this->assertSame(null, $noDocMethodRefl->getDocComment());
+
+        // return the correct doc block
+        $this->assertRegExp('/String const without visibility declaration/', $docMethodRefl->getDocComment());
+
+        // remove @var declaration
+        $this->assertNotRegExp('/@var/', $docMethodRefl->getDocComment());
+    }
+
+    public function testIsDeprecated()
+    {
+        $classReflection = $this->broker->getClass(DeprecatedEnum::class);
+        $deprecatedRefl = $this->reflectionExtension->getMethod($classReflection, 'DEPRECATED');
+        $notDeprecatedRefl = $this->reflectionExtension->getMethod($classReflection, 'NOT_DEPRECATED');
+
+        $this->assertTrue($deprecatedRefl->isDeprecated()->yes());
+        $this->assertTrue($notDeprecatedRefl->isDeprecated()->no());
+    }
+
+    public function testGetDeprecatedDescription()
+    {
+        $classReflection = $this->broker->getClass(DeprecatedEnum::class);
+        $deprecatedRefl = $this->reflectionExtension->getMethod($classReflection, 'DEPRECATED');
+        $notDeprecatedRefl = $this->reflectionExtension->getMethod($classReflection, 'NOT_DEPRECATED');
+
+        $this->assertSame('Test deprecated reflection', $deprecatedRefl->getDeprecatedDescription());
+        $this->assertNull($notDeprecatedRefl->getDeprecatedDescription());
     }
 }
