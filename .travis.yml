@@ -8,7 +8,6 @@ cache:
     - $HOME/ocular.phar
 
 env:
-  - PREFER_LOWEST=no
   - PREFER_LOWEST=yes
 
 matrix:

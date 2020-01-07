@@ -34,16 +34,9 @@ class EnumMethodsClassReflectionExtensionTest extends TestCase
     {
         $classReflection = $this->broker->getClass(StrEnum::class);
 
-        foreach (StrEnum::getNames() as $name) {
+        foreach (array_keys(StrEnum::getConstants()) as $name) {
             $this->assertTrue($this->reflectionExtension->hasMethod($classReflection, $name));
         }
-    }
-
-    public function testHasMethodPrivateProtectedNotFound()
-    {
-        $classReflection = $this->broker->getClass(StrEnum::class);
-        $this->assertFalse($this->reflectionExtension->hasMethod($classReflection, 'PRIVATE_STR'));
-        $this->assertFalse($this->reflectionExtension->hasMethod($classReflection, 'PROTECTED_STR'));
     }
 
     public function testHasMethodUnknownNotFound()
@@ -62,7 +55,7 @@ class EnumMethodsClassReflectionExtensionTest extends TestCase
     {
         $classReflection = $this->broker->getClass(StrEnum::class);
 
-        foreach (StrEnum::getNames() as $name) {
+        foreach (array_keys(StrEnum::getConstants()) as $name) {
             $methodReflection = $this->reflectionExtension->getMethod($classReflection, $name);
 
             $this->assertInstanceOf(EnumMethodReflection::class, $methodReflection);
