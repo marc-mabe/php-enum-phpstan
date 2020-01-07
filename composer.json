@@ -1,5 +1,5 @@
 {
-    "name": "timeweb/phpstan-enum",
+    "name": "marc-mabe/php-enum-phpstan",
     "description": "Enum class reflection extension for PHPStan",
     "type": "phpstan-extension",
     "keywords": ["enum", "phpstan"],
