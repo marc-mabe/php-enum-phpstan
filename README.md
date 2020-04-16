@@ -2,7 +2,7 @@
 
 [PHP-Enum](https://github.com/marc-mabe/php-enum) enumerations with native PHP.
 
-[PHPStan](https://github.com/phpstan/phpstan) is a static code analysis tool.
+[PHPStan](https://phpstan.org/) is a static code analysis tool.
 
 > PHPStan focuses on finding errors in your code without actually running it.
 > It catches whole classes of bugs even before you write tests for the code.
