@@ -25,10 +25,9 @@ abstract class ExtensionTestCase extends TestCase
     protected function processFile(
         string $file,
         string $expression,
-        string $type,
+        string $expectedType,
         DynamicMethodReturnTypeExtension $extension
-    ): void
-    {
+    ): void {
         $broker = $this->createBroker([$extension]);
         $parser = $this->getParser();
         $currentWorkingDirectory = $this->getCurrentWorkingDirectory();
@@ -60,7 +59,7 @@ abstract class ExtensionTestCase extends TestCase
         $resolver->processNodes(
             $parser->parseFile($file),
             $this->createScopeFactory($broker, $typeSpecifier)->create(ScopeContext::create($file)),
-            function (Node $node, Scope $scope) use ($expression, $type, &$run): void {
+            function (Node $node, Scope $scope) use ($expression, $expectedType, &$run): void {
                 if ($node instanceof VirtualNode) {
                     return;
                 }
@@ -69,10 +68,24 @@ abstract class ExtensionTestCase extends TestCase
                 }
                 /** @var \PhpParser\Node\Stmt\Expression $expNode */
                 $expNode = $this->getParser()->parseString(sprintf('<?php %s;', $expression))[0];
-                self::assertSame($type, $scope->getType($expNode->expr)->describe(VerbosityLevel::precise()));
+                self::assertSame($expectedType, $scope->getType($expNode->expr)->describe(VerbosityLevel::precise()));
                 $run = true;
             }
         );
         self::assertTrue($run);
+    }
+
+    protected function processCode(
+        string $code,
+        string $expression,
+        string $expectedType,
+        DynamicMethodReturnTypeExtension $extension
+    ): void {
+        $fd     = tmpfile();
+        $fdMeta = stream_get_meta_data($fd);
+        $file   = $fdMeta['uri'];
+        fwrite($fd, $code, strlen($code));
+
+        $this->processFile($file, $expression, $expectedType, $extension);
     }
 }

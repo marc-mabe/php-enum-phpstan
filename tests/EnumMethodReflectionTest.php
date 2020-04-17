@@ -7,8 +7,9 @@ namespace MabeEnumPHPStanTest;
 use MabeEnumPHPStan\EnumMethodReflection;
 use MabeEnumPHPStan\EnumMethodsClassReflectionExtension;
 use MabeEnumPHPStanTest\Assets\DeprecatedEnum;
+use MabeEnumPHPStanTest\Assets\DocCommentEnum;
 use MabeEnumPHPStanTest\Assets\NotAnEnum;
-use MabeEnumPHPStanTest\Assets\StrEnum;
+use MabeEnumPHPStanTest\Assets\VisibilityEnum;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Testing\TestCase;
 use PHPStan\TrinaryLogic;
@@ -34,7 +35,7 @@ class EnumMethodReflectionTest extends TestCase
 
     public function getDeclaringClass()
     {
-        $classReflection  = $this->broker->getClass(StrEnum::class);
+        $classReflection  = $this->broker->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
 
         $this->assertSame($classReflection, $methodReflection->getDeclaringClass());
@@ -42,7 +43,7 @@ class EnumMethodReflectionTest extends TestCase
 
     public function testShouldBeStatic()
     {
-        $classReflection  = $this->broker->getClass(StrEnum::class);
+        $classReflection  = $this->broker->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
 
         $this->assertTrue($methodReflection->isStatic());
@@ -50,7 +51,7 @@ class EnumMethodReflectionTest extends TestCase
 
     public function testShouldNotBePrivate()
     {
-        $classReflection  = $this->broker->getClass(StrEnum::class);
+        $classReflection  = $this->broker->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
 
         $this->assertFalse($methodReflection->isPrivate());
@@ -58,7 +59,7 @@ class EnumMethodReflectionTest extends TestCase
 
     public function testShouldBePublic()
     {
-        $classReflection  = $this->broker->getClass(StrEnum::class);
+        $classReflection  = $this->broker->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
 
         $this->assertTrue($methodReflection->isPublic());
@@ -66,24 +67,24 @@ class EnumMethodReflectionTest extends TestCase
 
     public function testGetVariants()
     {
-        $classReflection  = $this->broker->getClass(StrEnum::class);
+        $classReflection  = $this->broker->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
         $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
 
-        $this->assertSame(StrEnum::class, $parametersAcceptor->getReturnType()->describe(VerbosityLevel::value()));
+        $this->assertSame(VisibilityEnum::class, $parametersAcceptor->getReturnType()->describe(VerbosityLevel::value()));
     }
 
     public function testGetDocComment()
     {
-        $classReflection = $this->broker->getClass(StrEnum::class);
-        $docMethodRefl = $this->reflectionExtension->getMethod($classReflection, 'STR');
-        $noDocMethodRefl = $this->reflectionExtension->getMethod($classReflection, 'NO_DOC_BLOCK');
+        $classReflection = $this->broker->getClass(DocCommentEnum::class);
+        $docMethodRefl = $this->reflectionExtension->getMethod($classReflection, 'WITH_DOC_BLOCK');
+        $noDocMethodRefl = $this->reflectionExtension->getMethod($classReflection, 'WITHOUT_DOC_BLOCK');
 
         // return null on no doc block
         $this->assertSame(null, $noDocMethodRefl->getDocComment());
 
         // return the correct doc block
-        $this->assertRegExp('/String const without visibility declaration/', $docMethodRefl->getDocComment());
+        $this->assertRegExp('/With doc block/', $docMethodRefl->getDocComment());
 
         // remove @var declaration
         $this->assertNotRegExp('/@var/', $docMethodRefl->getDocComment());

@@ -6,7 +6,7 @@ namespace MabeEnumPHPStanTest\Assets;
 
 use MabeEnum\Enum;
 
-class StrEnum extends Enum
+class VisibilityEnum extends Enum
 {
     /**
      * String const without visibility declaration
@@ -29,6 +29,4 @@ class StrEnum extends Enum
      * Public string const
      */
     public const PUBLIC_STR = 'public str';
-
-    public const NO_DOC_BLOCK = 'no doc block';
 }
