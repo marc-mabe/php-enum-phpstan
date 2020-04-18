@@ -11,19 +11,25 @@ use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\ShouldNotHappenException;
 use PHPStan\Type\ArrayType;
+use PHPStan\Type\Constant\ConstantArrayType;
+use PHPStan\Type\ConstantTypeHelper;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
-use PHPStan\Type\IntegerType;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 
 class EnumDynamicReturnTypeExtension implements DynamicMethodReturnTypeExtension
 {
     /**
-     * Buffer of known return types of Enum::getValues()
-     * @var Type[]
-     * @phpstan-var array<class-string<Enum>, Type>
+     * Buffer of all types of enumeration values
+     * @phpstan-var array<class-string<Enum>, Type[]>
      */
-    private $enumValuesTypeBuffer = [];
+    private $enumValueTypesBuffer = [];
+
+    /**
+     * Buffer of all types of enumeration ordinals
+     * @phpstan-var array<class-string<Enum>, Type[]>
+     */
+    private $enumOrdinalTypesBuffer = [];
 
     public function getClass(): string
     {
@@ -40,45 +46,87 @@ class EnumDynamicReturnTypeExtension implements DynamicMethodReturnTypeExtension
         return in_array(strtolower($methodReflection->getName()), $supportedMethods, true);
     }
 
-    public function getTypeFromMethodCall(MethodReflection $methodReflection, MethodCall $methodCall, Scope $scope): Type
-    {
-        $enumType   = $scope->getType($methodCall->var);
-        $methodName    = $methodReflection->getName();
-        $methodClasses = $enumType->getReferencedClasses();
-        if (count($methodClasses) !== 1) {
-            return ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())->getReturnType();
+    public function getTypeFromMethodCall(
+        MethodReflection $methodReflection,
+        MethodCall $methodCall,
+        Scope $scope
+    ): Type {
+        $callType    = $scope->getType($methodCall->var);
+        $callClasses = $callType->getReferencedClasses();
+        $methodName  = strtolower($methodReflection->getName());
+        $returnTypes = [];
+        foreach ($callClasses as $callClass) {
+            if (!is_subclass_of($callClass, Enum::class, true)) {
+                $returnTypes[] = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())
+                    ->getReturnType();
+            } else {
+                switch ($methodName) {
+                    case 'getvalue':
+                        $returnTypes[] = $this->enumGetValueReturnType($callClass);
+                        break;
+                    case 'getvalues':
+                        $returnTypes[] = $this->enumGetValuesReturnType($callClass);
+                        break;
+                    default:
+                        throw new ShouldNotHappenException("Method {$methodName} is not supported");
+                }
+            }
         }
 
-        $enumeration = $methodClasses[0];
-
-        switch (strtolower($methodName)) {
-            case 'getvalue':
-                return $this->getEnumValuesType($enumeration, $scope);
-            case 'getvalues':
-                return new ArrayType(
-                    new IntegerType(),
-                    $this->getEnumValuesType($enumeration, $scope)
-                );
-            default:
-                throw new ShouldNotHappenException("Method {$methodName} is not supported");
-        }
+        return TypeCombinator::union(...$returnTypes);
     }
 
     /**
-     * Returns union type of all values of an enumeration
-     * @phpstan-param class-string<Enum> $enumClass
+     * Returns types of all values of an enumeration
+     * @phpstan-param class-string<Enum> $enumeration
+     * @return Type[]
      */
-    private function getEnumValuesType(string $enumeration, Scope $scope): Type
+    private function enumValueTypes(string $enumeration): array
     {
-        if (isset($this->enumValuesTypeBuffer[$enumeration])) {
-            return $this->enumValuesTypeBuffer[$enumeration];
+        if (isset($this->enumValueTypesBuffer[$enumeration])) {
+            return $this->enumValueTypesBuffer[$enumeration];
         }
 
         $values = array_values($enumeration::getConstants());
-        $types  = array_map(function ($value) use ($scope): Type {
-            return $scope->getTypeFromValue($value);
-        }, $values);
+        $types  = array_map([ConstantTypeHelper::class, 'getTypeFromValue'], $values);
 
-        return $this->enumValuesTypeBuffer[$enumeration] = TypeCombinator::union(...$types);
+        return $this->enumValueTypesBuffer[$enumeration] = $types;
+    }
+
+    /**
+     * Returns types of all ordinals of an enumeration
+     * @phpstan-param class-string<Enum> $enumeration
+     * @return Type[]
+     */
+    private function enumOrdinalTypes(string $enumeration): array
+    {
+        if (isset($this->enumOrdinalTypesBuffer[$enumeration])) {
+            return $this->enumOrdinalTypesBuffer[$enumeration];
+        }
+
+        $ordinals = array_keys($enumeration::getOrdinals());
+        $types    = array_map([ConstantTypeHelper::class, 'getTypeFromValue'], $ordinals);
+
+        return $this->enumOrdinalTypesBuffer[$enumeration] = $types;
+    }
+
+    /**
+     * Returns return type of Enum::getValue()
+     * @phpstan-param class-string<Enum> $enumeration
+     */
+    private function enumGetValueReturnType(string $enumeration): Type
+    {
+        return TypeCombinator::union(...$this->enumValueTypes($enumeration));
+    }
+
+    /**
+     * Returns return type of Enum::getValues()
+     * @phpstan-param class-string<Enum> $enumeration
+     */
+    private function enumGetValuesReturnType(string $enumeration): ArrayType
+    {
+        $keyTypes   = $this->enumOrdinalTypes($enumeration);
+        $valueTypes = $this->enumValueTypes($enumeration);
+        return new ConstantArrayType($keyTypes, $valueTypes, count($keyTypes));
     }
 }
