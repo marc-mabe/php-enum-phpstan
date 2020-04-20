@@ -3,6 +3,6 @@ services:
     tags:
       - phpstan.broker.methodsClassReflectionExtension
 
-  - class: MabeEnumPHPStan\EnumGetValueDynamicReturnTypeExtension
+  - class: MabeEnumPHPStan\EnumDynamicReturnTypeExtension
     tags:
       - phpstan.broker.dynamicMethodReturnTypeExtension
