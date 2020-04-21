@@ -2,3 +2,7 @@ services:
   - class: MabeEnumPHPStan\EnumMethodsClassReflectionExtension
     tags:
       - phpstan.broker.methodsClassReflectionExtension
+
+  - class: MabeEnumPHPStan\EnumDynamicReturnTypeExtension
+    tags:
+      - phpstan.broker.dynamicMethodReturnTypeExtension

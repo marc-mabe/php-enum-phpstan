@@ -9,7 +9,7 @@
 > It moves PHP closer to compiled languages in the sense that the correctness
 > of each line of the code can be checked before you run the actual line.  
 
-This PHPStan extension makes enumerator accessor methods known to PHPStan.
+This PHPStan extension makes enumerator accessor methods and enum possible values known to PHPStan.
 
 ## Install
 

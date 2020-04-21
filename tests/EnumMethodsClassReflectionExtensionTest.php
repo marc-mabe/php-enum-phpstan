@@ -7,7 +7,7 @@ namespace MabeEnumPHPStanTest;
 use MabeEnumPHPStan\EnumMethodReflection;
 use MabeEnumPHPStan\EnumMethodsClassReflectionExtension;
 use MabeEnumPHPStanTest\Assets\NotAnEnum;
-use MabeEnumPHPStanTest\Assets\StrEnum;
+use MabeEnumPHPStanTest\Assets\VisibilityEnum;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Testing\TestCase;
 use PHPStan\Type\VerbosityLevel;
@@ -32,16 +32,16 @@ class EnumMethodsClassReflectionExtensionTest extends TestCase
 
     public function testHasMethodSuccess()
     {
-        $classReflection = $this->broker->getClass(StrEnum::class);
+        $classReflection = $this->broker->getClass(VisibilityEnum::class);
 
-        foreach (array_keys(StrEnum::getConstants()) as $name) {
+        foreach (array_keys(VisibilityEnum::getConstants()) as $name) {
             $this->assertTrue($this->reflectionExtension->hasMethod($classReflection, $name));
         }
     }
 
     public function testHasMethodUnknownNotFound()
     {
-        $classReflection = $this->broker->getClass(StrEnum::class);
+        $classReflection = $this->broker->getClass(VisibilityEnum::class);
         $this->assertFalse($this->reflectionExtension->hasMethod($classReflection, 'UNKNOWN'));
     }
 
@@ -53,9 +53,9 @@ class EnumMethodsClassReflectionExtensionTest extends TestCase
 
     public function testGetMethodSuccess()
     {
-        $classReflection = $this->broker->getClass(StrEnum::class);
+        $classReflection = $this->broker->getClass(VisibilityEnum::class);
 
-        foreach (array_keys(StrEnum::getConstants()) as $name) {
+        foreach (array_keys(VisibilityEnum::getConstants()) as $name) {
             $methodReflection = $this->reflectionExtension->getMethod($classReflection, $name);
 
             $this->assertInstanceOf(EnumMethodReflection::class, $methodReflection);
