@@ -5,12 +5,16 @@ declare(strict_types=1);
 namespace MabeEnumPHPStanTest;
 
 use MabeEnum\Enum;
+use MabeEnum\EnumSet;
 use MabeEnumPHPStan\EnumDynamicReturnTypeExtension;
 
 final class EnumDynamicReturnTypeExtensionGetValuesTest extends ExtensionTestCase
 {
     /** @var EnumDynamicReturnTypeExtension */
     private $extension;
+
+    /** @var string */
+    private $baseType = 'array<int, array|bool|float|int|string|null>';
 
     protected function setUp(): void
     {
@@ -21,6 +25,12 @@ final class EnumDynamicReturnTypeExtensionGetValuesTest extends ExtensionTestCas
         }
 
         $this->extension = new EnumDynamicReturnTypeExtension();
+
+        // The base type has been set more specific in 4.3.0
+        // The method EnumSet::__debugInfo also where added in 4.3.0
+        if (!method_exists(EnumSet::class, '__debugInfo')) {
+            $this->baseType = 'array';
+        }
     }
 
     public function testNullType(): void
@@ -121,7 +131,7 @@ function f(MabeEnum\Enum $enum) {
 }
 CODE;
 
-        $this->processCode($code, '$enum->getValues()', 'array', $this->extension);
+        $this->processCode($code, '$enum->getValues()', $this->baseType, $this->extension);
     }
 
     public function testUnionEnum(): void
