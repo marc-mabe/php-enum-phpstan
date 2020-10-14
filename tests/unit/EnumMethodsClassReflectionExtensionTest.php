@@ -4,8 +4,8 @@ namespace MabeEnum\PHPStan\UnitTest;
 
 use MabeEnumPHPStan\EnumMethodReflection;
 use MabeEnumPHPStan\EnumMethodsClassReflectionExtension;
-use MabeEnum\PHPStan\tests\assets_\NotAnEnum;
-use MabeEnum\PHPStan\tests\assets_\VisibilityEnum;
+use MabeEnum\PHPStan\tests\assets\NotAnEnum;
+use MabeEnum\PHPStan\tests\assets\VisibilityEnum;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Testing\TestCase;
 use PHPStan\Type\VerbosityLevel;

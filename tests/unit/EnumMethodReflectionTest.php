@@ -4,10 +4,10 @@ namespace MabeEnum\PHPStan\tests\unit;
 
 use MabeEnumPHPStan\EnumMethodReflection;
 use MabeEnumPHPStan\EnumMethodsClassReflectionExtension;
-use MabeEnum\PHPStan\tests\assets_\DeprecatedEnum;
-use MabeEnum\PHPStan\tests\assets_\DocCommentEnum;
-use MabeEnum\PHPStan\tests\assets_\NotAnEnum;
-use MabeEnum\PHPStan\tests\assets_\VisibilityEnum;
+use MabeEnum\PHPStan\tests\assets\DeprecatedEnum;
+use MabeEnum\PHPStan\tests\assets\DocCommentEnum;
+use MabeEnum\PHPStan\tests\assets\NotAnEnum;
+use MabeEnum\PHPStan\tests\assets\VisibilityEnum;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Testing\TestCase;
 use PHPStan\TrinaryLogic;

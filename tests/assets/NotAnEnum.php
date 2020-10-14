@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace MabeEnum\PHPStan\tests\assets_;
+namespace MabeEnum\PHPStan\tests\assets;
 
 class NotAnEnum
 {
