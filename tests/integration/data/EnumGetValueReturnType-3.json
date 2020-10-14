@@ -1,0 +1,7 @@
+[
+    {
+        "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValueReturnType\\Example::fail() should return bool but returns float|int|string.",
+        "line": 18,
+        "ignorable": true
+    }
+]

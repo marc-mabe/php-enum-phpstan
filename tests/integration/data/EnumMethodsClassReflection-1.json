@@ -1,0 +1,7 @@
+[
+    {
+        "message": "Call to an undefined static method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumMethodsClassReflection\\MyEnum::NOT_AN_ENUMERATOR().",
+        "line": 16,
+        "ignorable": true
+    }
+]

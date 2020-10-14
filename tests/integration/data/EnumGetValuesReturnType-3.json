@@ -1,0 +1,12 @@
+[
+    {
+        "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\Example::staticMethodFail() should return array<int, bool> but returns array<int, float|int|string>.",
+        "line": 24,
+        "ignorable": true
+    },
+    {
+        "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\Example::objectMethodFail() should return array<int, bool> but returns array<int, float|int|string>.",
+        "line": 36,
+        "ignorable": true
+    }
+]

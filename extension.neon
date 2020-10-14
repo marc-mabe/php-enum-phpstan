@@ -5,4 +5,5 @@ services:
 
   - class: MabeEnumPHPStan\EnumDynamicReturnTypeExtension
     tags:
+      - phpstan.broker.dynamicStaticMethodReturnTypeExtension
       - phpstan.broker.dynamicMethodReturnTypeExtension

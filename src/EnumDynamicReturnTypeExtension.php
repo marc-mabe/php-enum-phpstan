@@ -1,24 +1,36 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace MabeEnumPHPStan;
 
 use MabeEnum\Enum;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
-use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\ShouldNotHappenException;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\ConstantTypeHelper;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
+use PHPStan\Type\DynamicStaticMethodReturnTypeExtension;
 use PHPStan\Type\Type;
 use PHPStan\Type\TypeCombinator;
 
-class EnumDynamicReturnTypeExtension implements DynamicMethodReturnTypeExtension
+class EnumDynamicReturnTypeExtension implements DynamicStaticMethodReturnTypeExtension, DynamicMethodReturnTypeExtension
 {
+    /**
+     * Map supported object method to a callable function detecting return type
+     *
+     * @var array<string, callable>
+     */
+    private $objectMethods = [];
+
+    /**
+     * Map supported static method to a callable function detecting return type
+     *
+     * @var array<string, callable>
+     */
+    private $staticMethods = [];
+
     /**
      * Buffer of all types of enumeration values
      * @phpstan-var array<class-string<Enum>, Type[]>
@@ -31,19 +43,48 @@ class EnumDynamicReturnTypeExtension implements DynamicMethodReturnTypeExtension
      */
     private $enumOrdinalTypesBuffer = [];
 
+    public function __construct()
+    {
+        $this->objectMethods['getvalue'] = function (string $class) {
+            return $this->detectGetValueReturnType($class);
+        };
+
+        if (method_exists(Enum::class, 'getvalues')) {
+            $this->staticMethods['getvalues'] = function (string $class) {
+                return $this->detectGetValuesReturnType($class);
+            };
+        }
+
+        // static methods cann be called like object methods
+        $this->objectMethods = array_merge($this->objectMethods, $this->staticMethods);
+    }
+
     public function getClass(): string
     {
         return Enum::class;
     }
 
+    public function isStaticMethodSupported(MethodReflection $methodReflection): bool
+    {
+        $methodLower = strtolower($methodReflection->getName());
+        return array_key_exists($methodLower, $this->staticMethods);
+    }
+
     public function isMethodSupported(MethodReflection $methodReflection): bool
     {
-        $supportedMethods = ['getvalue'];
-        if (method_exists(Enum::class, 'getValues')) {
-            array_push($supportedMethods, 'getvalues');
-        }
+        $methodLower = strtolower($methodReflection->getName());
+        return array_key_exists($methodLower, $this->objectMethods);
+    }
 
-        return in_array(strtolower($methodReflection->getName()), $supportedMethods, true);
+    public function getTypeFromStaticMethodCall(
+        MethodReflection $methodReflection,
+        StaticCall $staticCall,
+        Scope $scope
+    ): Type {
+        $callClass   = $staticCall->class->toString();
+        $methodLower = strtolower($methodReflection->getName());
+
+        return $this->staticMethods[$methodLower]($callClass);
     }
 
     public function getTypeFromMethodCall(
@@ -53,24 +94,10 @@ class EnumDynamicReturnTypeExtension implements DynamicMethodReturnTypeExtension
     ): Type {
         $callType    = $scope->getType($methodCall->var);
         $callClasses = $callType->getReferencedClasses();
-        $methodName  = strtolower($methodReflection->getName());
+        $methodLower = strtolower($methodReflection->getName());
         $returnTypes = [];
         foreach ($callClasses as $callClass) {
-            if (!is_subclass_of($callClass, Enum::class, true)) {
-                $returnTypes[] = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())
-                    ->getReturnType();
-            } else {
-                switch ($methodName) {
-                    case 'getvalue':
-                        $returnTypes[] = $this->enumGetValueReturnType($callClass);
-                        break;
-                    case 'getvalues':
-                        $returnTypes[] = $this->enumGetValuesReturnType($callClass);
-                        break;
-                    default:
-                        throw new ShouldNotHappenException("Method {$methodName} is not supported");
-                }
-            }
+            $returnTypes[] = $this->objectMethods[$methodLower]($callClass);
         }
 
         return TypeCombinator::union(...$returnTypes);
@@ -114,7 +141,7 @@ class EnumDynamicReturnTypeExtension implements DynamicMethodReturnTypeExtension
      * Returns return type of Enum::getValue()
      * @phpstan-param class-string<Enum> $enumeration
      */
-    private function enumGetValueReturnType(string $enumeration): Type
+    private function detectGetValueReturnType(string $enumeration): Type
     {
         return TypeCombinator::union(...$this->enumValueTypes($enumeration));
     }
@@ -123,7 +150,7 @@ class EnumDynamicReturnTypeExtension implements DynamicMethodReturnTypeExtension
      * Returns return type of Enum::getValues()
      * @phpstan-param class-string<Enum> $enumeration
      */
-    private function enumGetValuesReturnType(string $enumeration): ArrayType
+    private function detectGetValuesReturnType(string $enumeration): ArrayType
     {
         $keyTypes   = $this->enumOrdinalTypes($enumeration);
         $valueTypes = $this->enumValueTypes($enumeration);

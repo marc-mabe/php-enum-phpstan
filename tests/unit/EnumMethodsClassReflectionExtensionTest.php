@@ -1,13 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
-
-namespace MabeEnumPHPStanTest;
+namespace MabeEnum\PHPStan\UnitTest;
 
 use MabeEnumPHPStan\EnumMethodReflection;
 use MabeEnumPHPStan\EnumMethodsClassReflectionExtension;
-use MabeEnumPHPStanTest\Assets\NotAnEnum;
-use MabeEnumPHPStanTest\Assets\VisibilityEnum;
+use MabeEnum\PHPStan\tests\assets\NotAnEnum;
+use MabeEnum\PHPStan\tests\assets\VisibilityEnum;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Testing\TestCase;
 use PHPStan\Type\VerbosityLevel;

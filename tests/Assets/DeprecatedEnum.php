@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
-
-namespace MabeEnumPHPStanTest\Assets;
+namespace MabeEnum\PHPStan\tests\assets;
 
 use MabeEnum\Enum;
 
