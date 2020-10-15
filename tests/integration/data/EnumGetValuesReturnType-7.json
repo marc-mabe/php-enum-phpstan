@@ -1,0 +1,12 @@
+[
+    {
+        "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\MyEnum::staticGetValuesFail() should return array<int, null> but returns array<int, array|bool|float|int|string|null>.",
+        "line": 60,
+        "ignorable": true
+    },
+    {
+        "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\MyInheritedEnum::inheritStaticGetValuesFail() should return array<int, null> but returns array<int, array|bool|float|int|string|null>.",
+        "line": 83,
+        "ignorable": true
+    }
+]

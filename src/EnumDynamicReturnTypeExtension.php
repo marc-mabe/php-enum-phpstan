@@ -7,6 +7,7 @@ use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
+use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Type\ArrayType;
 use PHPStan\Type\Constant\ConstantArrayType;
 use PHPStan\Type\ConstantTypeHelper;
@@ -81,10 +82,20 @@ class EnumDynamicReturnTypeExtension implements DynamicStaticMethodReturnTypeExt
         StaticCall $staticCall,
         Scope $scope
     ): Type {
-        $callClass   = $staticCall->class->toString();
-        $methodLower = strtolower($methodReflection->getName());
+        $callClass = $staticCall->class->toString();
 
-        return $this->staticMethods[$methodLower]($callClass);
+        // Can't detect possible types on static::*()
+        // as it depends on defined enumerators of unknown inherited classes
+        if ($callClass === 'static') {
+            return ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())->getReturnType();
+        }
+
+        if ($callClass === 'self') {
+            $callClass = $scope->getClassReflection()->getName();
+        }
+
+        $methodLower = strtolower($methodReflection->getName());
+        return $this->objectMethods[$methodLower]($callClass);
     }
 
     public function getTypeFromMethodCall(
@@ -92,11 +103,9 @@ class EnumDynamicReturnTypeExtension implements DynamicStaticMethodReturnTypeExt
         MethodCall $methodCall,
         Scope $scope
     ): Type {
-        $callType    = $scope->getType($methodCall->var);
-        $callClasses = $callType->getReferencedClasses();
         $methodLower = strtolower($methodReflection->getName());
         $returnTypes = [];
-        foreach ($callClasses as $callClass) {
+        foreach ($scope->getType($methodCall->var)->getReferencedClasses() as $callClass) {
             $returnTypes[] = $this->objectMethods[$methodLower]($callClass);
         }
 

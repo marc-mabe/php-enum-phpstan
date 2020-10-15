@@ -18,7 +18,7 @@ class Example
         return MyInheritedEnum::getValues();
     }
 
-    /** @return array<int, bool> */
+    /** @return array<int, null> */
     public static function staticMethodFail(): array
     {
         return MyInheritedEnum::getValues();
@@ -30,7 +30,7 @@ class Example
         return MyInheritedEnum::STR()->getValues();
     }
 
-    /** @return array<int, bool> */
+    /** @return array<int, null> */
     public static function objectMethodFail(): array
     {
         return MyInheritedEnum::STR()->getValues();
@@ -41,9 +41,45 @@ class MyEnum extends Enum
 {
     const STR = 'str';
     const INT = 1;
+
+    /** @return array<int, int|string> */
+    public static function selfGetValuesValid(): array
+    {
+        return self::getValues();
+    }
+
+    /** @return array<int, null> */
+    public static function selfGetValuesFail(): array
+    {
+        return self::getValues();
+    }
+
+    /** @return array<int, null> */
+    public static function staticGetValuesFail(): array
+    {
+        return static::getValues();
+    }
 }
 
 class MyInheritedEnum extends MyEnum
 {
     const FLOAT = 1.1;
+
+    /** @return array<int, float|int|string> */
+    public static function inheritSelfGetValuesValid(): array
+    {
+        return self::getValues();
+    }
+
+    /** @return array<int, null> */
+    public static function inheritSelfGetValuesFail(): array
+    {
+        return self::getValues();
+    }
+
+    /** @return array<int, null> */
+    public static function inheritStaticGetValuesFail(): array
+    {
+        return static::getValues();
+    }
 }
