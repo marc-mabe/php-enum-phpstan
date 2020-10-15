@@ -25,13 +25,13 @@ class EnumMethodReflectionTest extends TestCase
      */
     protected $reflectionExtension;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->broker = $this->createBroker();
         $this->reflectionExtension = new EnumMethodsClassReflectionExtension();
     }
 
-    public function getDeclaringClass()
+    public function testGetDeclaringClass(): void
     {
         $classReflection  = $this->broker->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
@@ -39,7 +39,7 @@ class EnumMethodReflectionTest extends TestCase
         $this->assertSame($classReflection, $methodReflection->getDeclaringClass());
     }
 
-    public function testShouldBeStatic()
+    public function testShouldBeStatic(): void
     {
         $classReflection  = $this->broker->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
@@ -47,7 +47,7 @@ class EnumMethodReflectionTest extends TestCase
         $this->assertTrue($methodReflection->isStatic());
     }
 
-    public function testShouldNotBePrivate()
+    public function testShouldNotBePrivate(): void
     {
         $classReflection  = $this->broker->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
@@ -55,7 +55,7 @@ class EnumMethodReflectionTest extends TestCase
         $this->assertFalse($methodReflection->isPrivate());
     }
 
-    public function testShouldBePublic()
+    public function testShouldBePublic(): void
     {
         $classReflection  = $this->broker->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
@@ -63,7 +63,7 @@ class EnumMethodReflectionTest extends TestCase
         $this->assertTrue($methodReflection->isPublic());
     }
 
-    public function testGetVariants()
+    public function testGetVariants(): void
     {
         $classReflection  = $this->broker->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
@@ -72,7 +72,7 @@ class EnumMethodReflectionTest extends TestCase
         $this->assertSame(VisibilityEnum::class, $parametersAcceptor->getReturnType()->describe(VerbosityLevel::value()));
     }
 
-    public function testGetDocComment()
+    public function testGetDocComment(): void
     {
         $classReflection = $this->broker->getClass(DocCommentEnum::class);
         $docMethodRefl = $this->reflectionExtension->getMethod($classReflection, 'WITH_DOC_BLOCK');
@@ -88,7 +88,7 @@ class EnumMethodReflectionTest extends TestCase
         $this->assertNotRegExp('/@var/', $docMethodRefl->getDocComment());
     }
 
-    public function testIsDeprecated()
+    public function testIsDeprecated(): void
     {
         $classReflection = $this->broker->getClass(DeprecatedEnum::class);
         $deprecatedRefl = $this->reflectionExtension->getMethod($classReflection, 'DEPRECATED');
@@ -98,7 +98,7 @@ class EnumMethodReflectionTest extends TestCase
         $this->assertTrue($notDeprecatedRefl->isDeprecated()->no());
     }
 
-    public function testGetDeprecatedDescription()
+    public function testGetDeprecatedDescription(): void
     {
         $classReflection = $this->broker->getClass(DeprecatedEnum::class);
         $deprecatedRefl = $this->reflectionExtension->getMethod($classReflection, 'DEPRECATED');
