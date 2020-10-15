@@ -2,15 +2,12 @@
 
 namespace MabeEnum\PHPStan\tests\unit;
 
-use MabeEnumPHPStan\EnumMethodReflection;
 use MabeEnumPHPStan\EnumMethodsClassReflectionExtension;
 use MabeEnum\PHPStan\tests\assets\DeprecatedEnum;
 use MabeEnum\PHPStan\tests\assets\DocCommentEnum;
-use MabeEnum\PHPStan\tests\assets\NotAnEnum;
 use MabeEnum\PHPStan\tests\assets\VisibilityEnum;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Testing\TestCase;
-use PHPStan\TrinaryLogic;
 use PHPStan\Type\VerbosityLevel;
 
 class EnumMethodReflectionTest extends TestCase
@@ -98,10 +95,10 @@ class EnumMethodReflectionTest extends TestCase
         $this->assertSame(null, $noDocMethodRefl->getDocComment());
 
         // return the correct doc block
-        $this->assertRegExp('/With doc block/', $docMethodRefl->getDocComment());
+        $this->assertMatchesRegularExpression('/With doc block/', $docMethodRefl->getDocComment());
 
         // remove @var declaration
-        $this->assertNotRegExp('/@var/', $docMethodRefl->getDocComment());
+        $this->assertDoesNotMatchRegularExpression('/@var/', $docMethodRefl->getDocComment());
     }
 
     public function testIsDeprecated(): void
@@ -154,5 +151,25 @@ class EnumMethodReflectionTest extends TestCase
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
 
         $this->assertTrue($methodReflection->hasSideEffects()->no());
+    }
+
+    public static function assertMatchesRegularExpression(string $pattern, string $string, string $message = ''): void
+    {
+        if (method_exists(parent::class, 'assertMatchesRegularExpression')) {
+            parent::assertMatchesRegularExpression($pattern,  $string, $message);
+            return;
+        }
+
+        self::assertRegExp($pattern, $string, $message);
+    }
+
+    public static function assertDoesNotMatchRegularExpression(string $pattern, string $string, string $message = ''): void
+    {
+        if (method_exists(parent::class, 'assertDoesNotMatchRegularExpression')) {
+            parent::assertDoesNotMatchRegularExpression($pattern,  $string, $message);
+            return;
+        }
+
+        self::assertNotRegExp($pattern, $string, $message);
     }
 }

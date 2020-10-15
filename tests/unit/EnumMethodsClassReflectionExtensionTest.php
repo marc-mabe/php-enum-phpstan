@@ -1,14 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace MabeEnum\PHPStan\UnitTest;
+namespace MabeEnum\PHPStan\tests\unit;
 
 use MabeEnumPHPStan\EnumMethodReflection;
 use MabeEnumPHPStan\EnumMethodsClassReflectionExtension;
 use MabeEnum\PHPStan\tests\assets\NotAnEnum;
 use MabeEnum\PHPStan\tests\assets\VisibilityEnum;
-use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Testing\TestCase;
-use PHPStan\Type\VerbosityLevel;
 
 class EnumMethodsClassReflectionExtensionTest extends TestCase
 {
@@ -20,12 +18,12 @@ class EnumMethodsClassReflectionExtensionTest extends TestCase
     /**
      * @var EnumMethodsClassReflectionExtension
      */
-    protected $reflectionExtension;
+    protected $extension;
 
     public function setUp(): void
     {
         $this->broker = $this->createBroker();
-        $this->reflectionExtension = new EnumMethodsClassReflectionExtension();
+        $this->extension = new EnumMethodsClassReflectionExtension();
     }
 
     public function testHasMethodSuccess(): void
@@ -33,20 +31,20 @@ class EnumMethodsClassReflectionExtensionTest extends TestCase
         $classReflection = $this->broker->getClass(VisibilityEnum::class);
 
         foreach (array_keys(VisibilityEnum::getConstants()) as $name) {
-            $this->assertTrue($this->reflectionExtension->hasMethod($classReflection, $name));
+            $this->assertTrue($this->extension->hasMethod($classReflection, $name));
         }
     }
 
     public function testHasMethodUnknownNotFound(): void
     {
         $classReflection = $this->broker->getClass(VisibilityEnum::class);
-        $this->assertFalse($this->reflectionExtension->hasMethod($classReflection, 'UNKNOWN'));
+        $this->assertFalse($this->extension->hasMethod($classReflection, 'UNKNOWN'));
     }
 
     public function testHasMethodNotSubclassOfEnumNotFound(): void
     {
         $classReflection = $this->broker->getClass(NotAnEnum::class);
-        $this->assertFalse($this->reflectionExtension->hasMethod($classReflection, 'STR'));
+        $this->assertFalse($this->extension->hasMethod($classReflection, 'STR'));
     }
 
     public function testGetMethodSuccess(): void
@@ -54,7 +52,7 @@ class EnumMethodsClassReflectionExtensionTest extends TestCase
         $classReflection = $this->broker->getClass(VisibilityEnum::class);
 
         foreach (array_keys(VisibilityEnum::getConstants()) as $name) {
-            $methodReflection = $this->reflectionExtension->getMethod($classReflection, $name);
+            $methodReflection = $this->extension->getMethod($classReflection, $name);
 
             $this->assertInstanceOf(EnumMethodReflection::class, $methodReflection);
             $this->assertSame($classReflection, $methodReflection->getDeclaringClass());
