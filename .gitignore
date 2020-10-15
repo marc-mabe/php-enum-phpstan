@@ -1,6 +1,7 @@
 # hidden files
 .*
 !.gitignore
+!.gitattributes
 !.github
 
 #composer
