@@ -1,9 +1,8 @@
 # hidden files
 .*
 !.gitignore
-!.travis.yml
+!.github
 
 #composer
 composer.lock
-composer.phar
 vendor

@@ -22,13 +22,13 @@ class EnumMethodsClassReflectionExtensionTest extends TestCase
      */
     protected $reflectionExtension;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->broker = $this->createBroker();
         $this->reflectionExtension = new EnumMethodsClassReflectionExtension();
     }
 
-    public function testHasMethodSuccess()
+    public function testHasMethodSuccess(): void
     {
         $classReflection = $this->broker->getClass(VisibilityEnum::class);
 
@@ -37,19 +37,19 @@ class EnumMethodsClassReflectionExtensionTest extends TestCase
         }
     }
 
-    public function testHasMethodUnknownNotFound()
+    public function testHasMethodUnknownNotFound(): void
     {
         $classReflection = $this->broker->getClass(VisibilityEnum::class);
         $this->assertFalse($this->reflectionExtension->hasMethod($classReflection, 'UNKNOWN'));
     }
 
-    public function testHasMethodNotSubclassOfEnumNotFound()
+    public function testHasMethodNotSubclassOfEnumNotFound(): void
     {
         $classReflection = $this->broker->getClass(NotAnEnum::class);
         $this->assertFalse($this->reflectionExtension->hasMethod($classReflection, 'STR'));
     }
 
-    public function testGetMethodSuccess()
+    public function testGetMethodSuccess(): void
     {
         $classReflection = $this->broker->getClass(VisibilityEnum::class);
 
