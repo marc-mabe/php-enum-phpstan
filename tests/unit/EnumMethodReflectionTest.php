@@ -31,6 +31,14 @@ class EnumMethodReflectionTest extends TestCase
         $this->reflectionExtension = new EnumMethodsClassReflectionExtension();
     }
 
+    public function testGetName(): void
+    {
+        $classReflection  = $this->broker->getClass(VisibilityEnum::class);
+        $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
+
+        $this->assertSame('STR', $methodReflection->getName());
+    }
+
     public function testGetDeclaringClass(): void
     {
         $classReflection  = $this->broker->getClass(VisibilityEnum::class);
@@ -61,6 +69,14 @@ class EnumMethodReflectionTest extends TestCase
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
 
         $this->assertTrue($methodReflection->isPublic());
+    }
+
+    public function testGetPrototype(): void
+    {
+        $classReflection  = $this->broker->getClass(VisibilityEnum::class);
+        $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
+
+        $this->assertSame($methodReflection, $methodReflection->getPrototype());
     }
 
     public function testGetVariants(): void
@@ -106,5 +122,37 @@ class EnumMethodReflectionTest extends TestCase
 
         $this->assertSame('Test deprecated reflection', $deprecatedRefl->getDeprecatedDescription());
         $this->assertNull($notDeprecatedRefl->getDeprecatedDescription());
+    }
+
+    public function testIsFinal(): void
+    {
+        $classReflection = $this->broker->getClass(DeprecatedEnum::class);
+        $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
+
+        $this->assertTrue($methodReflection->isFinal()->no());
+    }
+
+    public function testIsInternal(): void
+    {
+        $classReflection = $this->broker->getClass(DeprecatedEnum::class);
+        $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
+
+        $this->assertTrue($methodReflection->isInternal()->no());
+    }
+
+    public function testGetThrowType(): void
+    {
+        $classReflection = $this->broker->getClass(DeprecatedEnum::class);
+        $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
+
+        $this->assertNull($methodReflection->getThrowType());
+    }
+
+    public function testHasSideEffects(): void
+    {
+        $classReflection = $this->broker->getClass(DeprecatedEnum::class);
+        $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
+
+        $this->assertTrue($methodReflection->hasSideEffects()->no());
     }
 }
