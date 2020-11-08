@@ -23,6 +23,8 @@ jobs:
             CODE_COVERAGE: true
           - PHP_VERSION: 7.4
             CODE_COVERAGE: true
+          - PHP_VERSION: 8.0-rc
+            CODE_COVERAGE: true
 
     steps:
       - uses: actions/checkout@v2
