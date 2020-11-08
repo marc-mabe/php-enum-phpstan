@@ -11,13 +11,13 @@ class EnumMethodsClassReflectionExtension implements MethodsClassReflectionExten
 {
     public function hasMethod(ClassReflection $classReflection, string $methodName): bool
     {
-        if ($classReflection->isSubclassOf(Enum::class)) {
-            $array = $classReflection->getNativeReflection()->getMethod('getConstants')->invoke(null);
-
-            return array_key_exists($methodName, $array);
+        if (!$classReflection->isSubclassOf(Enum::class)) {
+            return false;
         }
 
-        return false;
+        /** @var string|Enum $class */
+        $class = $classReflection->getName();
+        return array_key_exists($methodName, $class::getConstants());
     }
 
     public function getMethod(ClassReflection $classReflection, string $methodName): MethodReflection
