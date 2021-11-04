@@ -6,9 +6,9 @@ use MabeEnumPHPStan\EnumMethodReflection;
 use MabeEnumPHPStan\EnumMethodsClassReflectionExtension;
 use MabeEnum\PHPStan\tests\assets\NotAnEnum;
 use MabeEnum\PHPStan\tests\assets\VisibilityEnum;
-use PHPStan\Testing\TestCase;
+use PHPStan\Testing\PHPStanTestCase;
 
-class EnumMethodsClassReflectionExtensionTest extends TestCase
+class EnumMethodsClassReflectionExtensionTest extends PHPStanTestCase
 {
     /**
      * @var \PHPStan\Broker\Broker

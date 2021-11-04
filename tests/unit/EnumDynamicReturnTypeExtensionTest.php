@@ -5,9 +5,9 @@ namespace MabeEnum\PHPStan\tests\unit;
 use MabeEnum\Enum;
 use MabeEnumPHPStan\EnumDynamicReturnTypeExtension;
 use PHPStan\Reflection\Dummy\DummyMethodReflection;
-use PHPStan\Testing\TestCase;
+use PHPStan\Testing\PHPStanTestCase;
 
-class EnumDynamicReturnTypeExtensionTest extends TestCase
+class EnumDynamicReturnTypeExtensionTest extends PHPStanTestCase
 {
     /**
      * @var EnumDynamicReturnTypeExtension

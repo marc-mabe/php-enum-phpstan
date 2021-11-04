@@ -7,10 +7,10 @@ use MabeEnum\PHPStan\tests\assets\DeprecatedEnum;
 use MabeEnum\PHPStan\tests\assets\DocCommentEnum;
 use MabeEnum\PHPStan\tests\assets\VisibilityEnum;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Testing\TestCase;
+use PHPStan\Testing\PHPStanTestCase;
 use PHPStan\Type\VerbosityLevel;
 
-class EnumMethodReflectionTest extends TestCase
+class EnumMethodReflectionTest extends PHPStanTestCase
 {
     /**
      * @var \PHPStan\Broker\Broker

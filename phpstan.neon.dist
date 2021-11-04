@@ -7,4 +7,5 @@ parameters:
 		- src
 		- tests
 	excludePaths:
+		- tests/assets
 		- tests/integration/data
