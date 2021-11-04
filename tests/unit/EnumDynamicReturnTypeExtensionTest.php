@@ -4,14 +4,13 @@ namespace MabeEnum\PHPStan\tests\unit;
 
 use MabeEnum\Enum;
 use MabeEnumPHPStan\EnumDynamicReturnTypeExtension;
-use MabeEnumPHPStan\EnumMethodsClassReflectionExtension;
 use PHPStan\Reflection\Dummy\DummyMethodReflection;
 use PHPStan\Testing\TestCase;
 
 class EnumDynamicReturnTypeExtensionTest extends TestCase
 {
     /**
-     * @var EnumMethodsClassReflectionExtension
+     * @var EnumDynamicReturnTypeExtension
      */
     protected $extension;
 
