@@ -4,7 +4,7 @@ namespace MabeEnum\PHPStan\tests\unit;
 
 use MabeEnum\Enum;
 use MabeEnumPHPStan\EnumDynamicReturnTypeExtension;
-use PHPStan\Reflection\Dummy\DummyMethodReflection;
+use PHPStan\Reflection\MethodReflection;
 use PHPStan\Testing\PHPStanTestCase;
 
 class EnumDynamicReturnTypeExtensionTest extends PHPStanTestCase
@@ -24,41 +24,49 @@ class EnumDynamicReturnTypeExtensionTest extends PHPStanTestCase
         $this->assertSame(Enum::class, $this->extension->getClass());
     }
 
+    private function createMethodWithName(string $name): MethodReflection
+    {
+        $method = $this->createMock(MethodReflection::class);
+        $method->method('getName')->willReturn($name);
+
+        return $method;
+    }
+
     /** @dataProvider staticMethodsProvider */
     public function testIsStaticMethodSupportedShouldReturnTrue(string $method): void
     {
-        $reflectionMethod = new DummyMethodReflection($method);
+        $reflectionMethod = $this->createMethodWithName($method);
         $this->assertTrue($this->extension->isStaticMethodSupported($reflectionMethod));
 
-        $reflectionMethod = new DummyMethodReflection(strtolower($method));
+        $reflectionMethod = $this->createMethodWithName(strtolower($method));
         $this->assertTrue($this->extension->isStaticMethodSupported($reflectionMethod));
 
-        $reflectionMethod = new DummyMethodReflection(strtoupper($method));
+        $reflectionMethod = $this->createMethodWithName(strtoupper($method));
         $this->assertTrue($this->extension->isStaticMethodSupported($reflectionMethod));
     }
 
     public function testIsStaticMethodSupportedShouldReturnFalse(): void
     {
-        $reflectionMethod = new DummyMethodReflection('fooBar');
+        $reflectionMethod = $this->createMethodWithName('fooBar');
         $this->assertFalse($this->extension->isStaticMethodSupported($reflectionMethod));
     }
 
     /** @dataProvider objectMethodsProvider */
     public function testIsMethodSupportedShouldReturnTrue(string $method): void
     {
-        $reflectionMethod = new DummyMethodReflection($method);
+        $reflectionMethod = $this->createMethodWithName($method);
         $this->assertTrue($this->extension->isMethodSupported($reflectionMethod));
 
-        $reflectionMethod = new DummyMethodReflection(strtolower($method));
+        $reflectionMethod = $this->createMethodWithName(strtolower($method));
         $this->assertTrue($this->extension->isMethodSupported($reflectionMethod));
 
-        $reflectionMethod = new DummyMethodReflection(strtoupper($method));
+        $reflectionMethod = $this->createMethodWithName(strtoupper($method));
         $this->assertTrue($this->extension->isMethodSupported($reflectionMethod));
     }
 
     public function testIsMethodSupportedShouldReturnFalse(): void
     {
-        $reflectionMethod = new DummyMethodReflection('fooBar');
+        $reflectionMethod = $this->createMethodWithName('fooBar');
         $this->assertFalse($this->extension->isMethodSupported($reflectionMethod));
     }
 
