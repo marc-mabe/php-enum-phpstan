@@ -3,7 +3,11 @@
 !.gitignore
 !.gitattributes
 !.github
+!.editorconfig
 
 #composer
 composer.lock
 vendor
+
+#phpstan
+phpstan.neon

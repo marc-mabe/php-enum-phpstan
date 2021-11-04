@@ -8,8 +8,7 @@ use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
-use PHPStan\Type\ArrayType;
-use PHPStan\Type\Constant\ConstantArrayType;
+use PHPStan\Type\Constant\ConstantArrayTypeBuilder;
 use PHPStan\Type\ConstantTypeHelper;
 use PHPStan\Type\DynamicMethodReturnTypeExtension;
 use PHPStan\Type\DynamicStaticMethodReturnTypeExtension;
@@ -159,10 +158,17 @@ class EnumDynamicReturnTypeExtension implements DynamicStaticMethodReturnTypeExt
      * Returns return type of Enum::getValues()
      * @phpstan-param class-string<Enum> $enumeration
      */
-    private function detectGetValuesReturnType(string $enumeration): ArrayType
+    private function detectGetValuesReturnType(string $enumeration): Type
     {
         $keyTypes   = $this->enumOrdinalTypes($enumeration);
         $valueTypes = $this->enumValueTypes($enumeration);
-        return new ConstantArrayType($keyTypes, $valueTypes, count($keyTypes));
+
+        $builder = ConstantArrayTypeBuilder::createEmpty();
+        foreach ($keyTypes as $i => $keyType) {
+            $valueType = $valueTypes[$i];
+            $builder->setOffsetValueType($keyType, $valueType);
+        }
+
+        return $builder->getArray();
     }
 }

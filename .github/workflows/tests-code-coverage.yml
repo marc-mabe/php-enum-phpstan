@@ -1,0 +1,47 @@
+name: Tests with code coverage
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  tests:
+    name: "Tests"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - "7.2"
+          - "7.3"
+          - "7.4"
+          - "8.0"
+          - "8.1"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: "pcov"
+          php-version: "${{ matrix.php-version }}"
+          extensions: mbstring
+
+      - name: "Install dependencies"
+        run: "composer install --no-interaction --no-progress --no-suggest"
+
+      - name: "Tests"
+        run: |
+          php -d 'zend.assertions=1' -d 'pcov.enabled=1' -d 'pcov.directory=src' vendor/bin/phpunit --coverage-clover=.clover.xml
+
+      - name: "Upload Codecov Report"
+        uses: "codecov/codecov-action@v1"
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: .clover.xml
