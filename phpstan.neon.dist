@@ -1,0 +1,10 @@
+includes:
+	- extension.neon
+
+parameters:
+	level: 5
+	paths:
+		- src
+		- tests
+	excludePaths:
+		- tests/integration/data
