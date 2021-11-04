@@ -11,9 +11,9 @@ use PHPStan\Testing\PHPStanTestCase;
 class EnumMethodsClassReflectionExtensionTest extends PHPStanTestCase
 {
     /**
-     * @var \PHPStan\Broker\Broker
+     * @var \PHPStan\Reflection\ReflectionProvider
      */
-    protected $broker;
+    protected $reflectionProvider;
 
     /**
      * @var EnumMethodsClassReflectionExtension
@@ -22,13 +22,13 @@ class EnumMethodsClassReflectionExtensionTest extends PHPStanTestCase
 
     public function setUp(): void
     {
-        $this->broker = $this->createBroker();
+        $this->reflectionProvider = $this->createReflectionProvider();
         $this->extension = new EnumMethodsClassReflectionExtension();
     }
 
     public function testHasMethodSuccess(): void
     {
-        $classReflection = $this->broker->getClass(VisibilityEnum::class);
+        $classReflection = $this->reflectionProvider->getClass(VisibilityEnum::class);
 
         foreach (array_keys(VisibilityEnum::getConstants()) as $name) {
             $this->assertTrue($this->extension->hasMethod($classReflection, $name));
@@ -37,19 +37,19 @@ class EnumMethodsClassReflectionExtensionTest extends PHPStanTestCase
 
     public function testHasMethodUnknownNotFound(): void
     {
-        $classReflection = $this->broker->getClass(VisibilityEnum::class);
+        $classReflection = $this->reflectionProvider->getClass(VisibilityEnum::class);
         $this->assertFalse($this->extension->hasMethod($classReflection, 'UNKNOWN'));
     }
 
     public function testHasMethodNotSubclassOfEnumNotFound(): void
     {
-        $classReflection = $this->broker->getClass(NotAnEnum::class);
+        $classReflection = $this->reflectionProvider->getClass(NotAnEnum::class);
         $this->assertFalse($this->extension->hasMethod($classReflection, 'STR'));
     }
 
     public function testGetMethodSuccess(): void
     {
-        $classReflection = $this->broker->getClass(VisibilityEnum::class);
+        $classReflection = $this->reflectionProvider->getClass(VisibilityEnum::class);
 
         foreach (array_keys(VisibilityEnum::getConstants()) as $name) {
             $methodReflection = $this->extension->getMethod($classReflection, $name);
