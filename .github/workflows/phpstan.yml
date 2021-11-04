@@ -1,0 +1,37 @@
+name: PHPStan
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+jobs:
+  phpstan:
+    name: "PHPStan"
+    runs-on: "ubuntu-latest"
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - "7.4"
+          - "8.0"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: "none"
+          php-version: "${{ matrix.php-version }}"
+          extensions: mbstring
+
+      - name: "Install dependencies"
+        run: "composer install --no-interaction --no-progress --no-suggest"
+
+      - name: "PHPStan"
+        run: "vendor/bin/phpstan"
