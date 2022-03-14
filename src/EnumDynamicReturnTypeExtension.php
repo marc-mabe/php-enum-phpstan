@@ -3,6 +3,7 @@
 namespace MabeEnumPHPStan;
 
 use MabeEnum\Enum;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
 use PHPStan\Analyser\Scope;
@@ -81,6 +82,9 @@ class EnumDynamicReturnTypeExtension implements DynamicStaticMethodReturnTypeExt
         StaticCall $staticCall,
         Scope $scope
     ): Type {
+        if ($staticCall->class instanceof Expr) {
+            return ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())->getReturnType();
+        }
         $callClass = $staticCall->class->toString();
 
         // Can't detect possible types on static::*()
