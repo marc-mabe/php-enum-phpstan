@@ -6,6 +6,15 @@ use MabeEnum\Enum;
 
 class Example
 {
+    /** @var class-string<Enum> */
+    protected $enumClass = Enum::class;
+
+    /** @return array<int, float|int|string> */
+    public function getDynamicValues(): array
+    {
+        return $this->enumClass::getValues();
+    }
+
     /** @return array<int, null> */
     public static function baseMethodValid(): array
     {
