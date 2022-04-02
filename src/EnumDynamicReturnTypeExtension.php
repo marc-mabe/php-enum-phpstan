@@ -3,9 +3,9 @@
 namespace MabeEnumPHPStan;
 
 use MabeEnum\Enum;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Name;
 use PHPStan\Analyser\Scope;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\ParametersAcceptorSelector;
@@ -56,7 +56,7 @@ class EnumDynamicReturnTypeExtension implements DynamicStaticMethodReturnTypeExt
             };
         }
 
-        // static methods cann be called like object methods
+        // static methods can be called like object methods
         $this->objectMethods = array_merge($this->objectMethods, $this->staticMethods);
     }
 
@@ -82,23 +82,28 @@ class EnumDynamicReturnTypeExtension implements DynamicStaticMethodReturnTypeExt
         StaticCall $staticCall,
         Scope $scope
     ): Type {
-        if ($staticCall->class instanceof Expr) {
+        $callClass = $staticCall->class;
+
+        // The call class is not a name
+        // E.g. an expression on $enumClass::getValues()
+        if (!$callClass instanceof Name) {
             return ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())->getReturnType();
         }
-        $callClass = $staticCall->class->toString();
+
+        $callClassName = $callClass->toString();
 
         // Can't detect possible types on static::*()
         // as it depends on defined enumerators of unknown inherited classes
-        if ($callClass === 'static') {
+        if ($callClassName === 'static') {
             return ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())->getReturnType();
         }
 
-        if ($callClass === 'self') {
-            $callClass = $scope->getClassReflection()->getName();
+        if ($callClassName === 'self') {
+            $callClassName = $scope->getClassReflection()->getName();
         }
 
         $methodLower = strtolower($methodReflection->getName());
-        return $this->objectMethods[$methodLower]($callClass);
+        return $this->staticMethods[$methodLower]($callClassName);
     }
 
     public function getTypeFromMethodCall(

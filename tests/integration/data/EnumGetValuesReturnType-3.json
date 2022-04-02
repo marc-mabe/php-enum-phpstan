@@ -1,22 +1,22 @@
 [
     {
         "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\Example::staticMethodFail() should return array<int, null> but returns array<int, float|int|string>.",
-        "line": 33,
+        "line": 40,
         "ignorable": true
     },
     {
         "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\Example::objectMethodFail() should return array<int, null> but returns array<int, float|int|string>.",
-        "line": 45,
+        "line": 52,
         "ignorable": true
     },
     {
         "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\MyEnum::selfGetValuesFail() should return array<int, null> but returns array<int, int|string>.",
-        "line": 63,
+        "line": 70,
         "ignorable": true
     },
     {
         "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\MyInheritedEnum::inheritSelfGetValuesFail() should return array<int, null> but returns array<int, float|int|string>.",
-        "line": 86,
+        "line": 93,
         "ignorable": true
     }
 ]

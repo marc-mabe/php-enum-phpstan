@@ -1,17 +1,17 @@
 [
     {
-        "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\Example::getDynamicValues() should return array<int, float|int|string> but returns array<int, array<int|string, mixed>|bool|float|int|string|null>.",
-        "line": 15,
+        "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\Example::staticBaseExprMethodFail() should return array<int, null> but returns array<int, array<int|string, mixed>|bool|float|int|string|null>.",
+        "line": 21,
         "ignorable": true
     },
     {
         "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\MyEnum::staticGetValuesFail() should return array<int, null> but returns array<int, array<int|string, mixed>|bool|float|int|string|null>.",
-        "line": 69,
+        "line": 76,
         "ignorable": true
     },
     {
         "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\MyInheritedEnum::inheritStaticGetValuesFail() should return array<int, null> but returns array<int, array<int|string, mixed>|bool|float|int|string|null>.",
-        "line": 92,
+        "line": 99,
         "ignorable": true
     }
 ]

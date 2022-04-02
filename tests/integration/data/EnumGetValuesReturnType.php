@@ -9,15 +9,22 @@ class Example
     /** @var class-string<Enum> */
     protected $enumClass = Enum::class;
 
-    /** @return array<int, float|int|string> */
-    public function getDynamicValues(): array
+    /** @return array<int, bool|float|int|string|null|array<int|string, mixed>> */
+    public function staticBaseExprMethodValid(): array
     {
         return $this->enumClass::getValues();
     }
 
     /** @return array<int, null> */
-    public static function baseMethodValid(): array
+    public function staticBaseExprMethodFail(): array
     {
+        return $this->enumClass::getValues();
+    }
+
+    /** @return array<int, null> */
+    public static function staticBaseMethodValid(): array
+    {
+        // It returns an empty array so the key/value types doesn't matter
         return Enum::getValues();
     }
 
