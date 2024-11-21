@@ -9,6 +9,7 @@ use MabeEnum\PHPStan\tests\assets\VisibilityEnum;
 use PHPStan\Reflection\ParametersAcceptorSelector;
 use PHPStan\Testing\PHPStanTestCase;
 use PHPStan\Type\VerbosityLevel;
+use PHPStan\Analyser\Scope;
 
 class EnumMethodReflectionTest extends PHPStanTestCase
 {
@@ -30,7 +31,7 @@ class EnumMethodReflectionTest extends PHPStanTestCase
 
     public function testGetName(): void
     {
-        $classReflection  = $this->reflectionProvider->getClass(VisibilityEnum::class);
+        $classReflection = $this->reflectionProvider->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
 
         $this->assertSame('STR', $methodReflection->getName());
@@ -38,7 +39,7 @@ class EnumMethodReflectionTest extends PHPStanTestCase
 
     public function testGetDeclaringClass(): void
     {
-        $classReflection  = $this->reflectionProvider->getClass(VisibilityEnum::class);
+        $classReflection = $this->reflectionProvider->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
 
         $this->assertSame($classReflection, $methodReflection->getDeclaringClass());
@@ -46,7 +47,7 @@ class EnumMethodReflectionTest extends PHPStanTestCase
 
     public function testShouldBeStatic(): void
     {
-        $classReflection  = $this->reflectionProvider->getClass(VisibilityEnum::class);
+        $classReflection = $this->reflectionProvider->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
 
         $this->assertTrue($methodReflection->isStatic());
@@ -54,7 +55,7 @@ class EnumMethodReflectionTest extends PHPStanTestCase
 
     public function testShouldNotBePrivate(): void
     {
-        $classReflection  = $this->reflectionProvider->getClass(VisibilityEnum::class);
+        $classReflection = $this->reflectionProvider->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
 
         $this->assertFalse($methodReflection->isPrivate());
@@ -62,7 +63,7 @@ class EnumMethodReflectionTest extends PHPStanTestCase
 
     public function testShouldBePublic(): void
     {
-        $classReflection  = $this->reflectionProvider->getClass(VisibilityEnum::class);
+        $classReflection = $this->reflectionProvider->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
 
         $this->assertTrue($methodReflection->isPublic());
@@ -70,7 +71,7 @@ class EnumMethodReflectionTest extends PHPStanTestCase
 
     public function testGetPrototype(): void
     {
-        $classReflection  = $this->reflectionProvider->getClass(VisibilityEnum::class);
+        $classReflection = $this->reflectionProvider->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
 
         $this->assertSame($methodReflection, $methodReflection->getPrototype());
@@ -78,11 +79,20 @@ class EnumMethodReflectionTest extends PHPStanTestCase
 
     public function testGetVariants(): void
     {
-        $classReflection  = $this->reflectionProvider->getClass(VisibilityEnum::class);
+        $classReflection = $this->reflectionProvider->getClass(VisibilityEnum::class);
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
-        $parametersAcceptor = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants());
 
-        $this->assertSame(VisibilityEnum::class, $parametersAcceptor->getReturnType()->describe(VerbosityLevel::value()));
+        $scope = $this->createMock(Scope::class);
+        $parametersAcceptor = ParametersAcceptorSelector::selectFromArgs(
+            $scope,
+            [],
+            $methodReflection->getVariants()
+        );
+
+        $this->assertSame(
+            VisibilityEnum::class,
+            $parametersAcceptor->getReturnType()->describe(VerbosityLevel::value())
+        );
     }
 
     public function testGetDocComment(): void
@@ -155,21 +165,11 @@ class EnumMethodReflectionTest extends PHPStanTestCase
 
     public static function assertMatchesRegularExpression(string $pattern, string $string, string $message = ''): void
     {
-        if (method_exists(parent::class, 'assertMatchesRegularExpression')) {
-            parent::assertMatchesRegularExpression($pattern,  $string, $message);
-            return;
-        }
-
-        self::assertRegExp($pattern, $string, $message);
+        parent::assertMatchesRegularExpression($pattern, $string, $message);
     }
 
     public static function assertDoesNotMatchRegularExpression(string $pattern, string $string, string $message = ''): void
     {
-        if (method_exists(parent::class, 'assertDoesNotMatchRegularExpression')) {
-            parent::assertDoesNotMatchRegularExpression($pattern,  $string, $message);
-            return;
-        }
-
-        self::assertNotRegExp($pattern, $string, $message);
+        parent::assertDoesNotMatchRegularExpression($pattern, $string, $message);
     }
 }

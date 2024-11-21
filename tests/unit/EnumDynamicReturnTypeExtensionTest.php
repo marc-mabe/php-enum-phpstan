@@ -72,13 +72,7 @@ class EnumDynamicReturnTypeExtensionTest extends PHPStanTestCase
 
     public function staticMethodsProvider(): array
     {
-        $staticMethods = [];
-
-        if (method_exists(Enum::class, 'getValues')) {
-            $staticMethods[] = ['getValues'];
-        }
-
-        return $staticMethods;
+        return [['getValues']];
     }
 
     public function objectMethodsProvider(): array

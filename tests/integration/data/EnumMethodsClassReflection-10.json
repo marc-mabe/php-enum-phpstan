@@ -1,0 +1,7 @@
+[
+    {
+        "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumMethodsClassReflection\\Example::fail() should return MabeEnum\\PHPStan\\tests\\integration\\data\\EnumMethodsClassReflection\\MyEnum but returns mixed.",
+        "line": 16,
+        "ignorable": true
+    }
+]
