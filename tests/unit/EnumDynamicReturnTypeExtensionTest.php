@@ -9,10 +9,7 @@ use PHPStan\Testing\PHPStanTestCase;
 
 class EnumDynamicReturnTypeExtensionTest extends PHPStanTestCase
 {
-    /**
-     * @var EnumDynamicReturnTypeExtension
-     */
-    protected $extension;
+    protected EnumDynamicReturnTypeExtension $extension;
 
     public function setUp(): void
     {

@@ -23,26 +23,26 @@ class EnumDynamicReturnTypeExtension implements DynamicStaticMethodReturnTypeExt
      *
      * @var array<string, callable>
      */
-    private $objectMethods = [];
+    private array $objectMethods = [];
 
     /**
      * Map supported static method to a callable function detecting return type
      *
      * @var array<string, callable>
      */
-    private $staticMethods = [];
+    private array $staticMethods = [];
 
     /**
      * Buffer of all types of enumeration values
      * @phpstan-var array<class-string<Enum>, Type[]>
      */
-    private $enumValueTypesBuffer = [];
+    private array $enumValueTypesBuffer = [];
 
     /**
      * Buffer of all types of enumeration ordinals
      * @phpstan-var array<class-string<Enum>, Type[]>
      */
-    private $enumOrdinalTypesBuffer = [];
+    private array $enumOrdinalTypesBuffer = [];
 
     public function __construct()
     {

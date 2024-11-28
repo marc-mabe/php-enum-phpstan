@@ -13,15 +13,9 @@ use PHPStan\Type\Type;
 
 class EnumMethodReflection implements MethodReflection
 {
-    /**
-     * @var ClassReflection
-     */
-    private $classReflection;
+    private ClassReflection $classReflection;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
 
     public function __construct(ClassReflection $classReflection, string $name)
     {

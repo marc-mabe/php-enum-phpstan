@@ -2,12 +2,10 @@
 
 namespace MabeEnum\PHPStan\tests\integration;
 
-use MabeEnum\Enum;
 use PHPStan\Testing\LevelsTestCase;
 
 final class IntegrationTest extends LevelsTestCase
 {
-
     /**
      * @return string[][]
      */

@@ -7,21 +7,15 @@ use MabeEnum\PHPStan\tests\assets\DeprecatedEnum;
 use MabeEnum\PHPStan\tests\assets\DocCommentEnum;
 use MabeEnum\PHPStan\tests\assets\VisibilityEnum;
 use PHPStan\Reflection\ParametersAcceptorSelector;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Testing\PHPStanTestCase;
 use PHPStan\Type\VerbosityLevel;
 use PHPStan\Analyser\Scope;
 
 class EnumMethodReflectionTest extends PHPStanTestCase
 {
-    /**
-     * @var \PHPStan\Reflection\ReflectionProvider
-     */
-    protected $reflectionProvider;
-
-    /**
-     * @var EnumMethodsClassReflectionExtension
-     */
-    protected $reflectionExtension;
+    protected ReflectionProvider $reflectionProvider;
+    protected EnumMethodsClassReflectionExtension $reflectionExtension;
 
     public function setUp(): void
     {
@@ -161,15 +155,5 @@ class EnumMethodReflectionTest extends PHPStanTestCase
         $methodReflection = $this->reflectionExtension->getMethod($classReflection, 'STR');
 
         $this->assertTrue($methodReflection->hasSideEffects()->no());
-    }
-
-    public static function assertMatchesRegularExpression(string $pattern, string $string, string $message = ''): void
-    {
-        parent::assertMatchesRegularExpression($pattern, $string, $message);
-    }
-
-    public static function assertDoesNotMatchRegularExpression(string $pattern, string $string, string $message = ''): void
-    {
-        parent::assertDoesNotMatchRegularExpression($pattern, $string, $message);
     }
 }
