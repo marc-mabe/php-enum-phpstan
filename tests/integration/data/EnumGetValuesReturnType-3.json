@@ -1,5 +1,10 @@
 [
     {
+        "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\Example::staticBaseExprMethodFail() should return array<int, null> but returns array<int, array<int|string, mixed>|bool|float|int|string|null>.",
+        "line": 21,
+        "ignorable": true
+    },
+    {
         "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\Example::staticMethodFail() should return array<int, null> but returns array<int, float|int|string>.",
         "line": 40,
         "ignorable": true
@@ -15,8 +20,18 @@
         "ignorable": true
     },
     {
+        "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\MyEnum::staticGetValuesFail() should return array<int, null> but returns array<int, array<int|string, mixed>|bool|float|int|string|null>.",
+        "line": 76,
+        "ignorable": true
+    },
+    {
         "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\MyInheritedEnum::inheritSelfGetValuesFail() should return array<int, null> but returns array<int, float|int|string>.",
         "line": 93,
+        "ignorable": true
+    },
+    {
+        "message": "Method MabeEnum\\PHPStan\\tests\\integration\\data\\EnumGetValuesReturnType\\MyInheritedEnum::inheritStaticGetValuesFail() should return array<int, null> but returns array<int, array<int|string, mixed>|bool|float|int|string|null>.",
+        "line": 99,
         "ignorable": true
     }
 ]

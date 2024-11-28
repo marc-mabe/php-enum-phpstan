@@ -6,19 +6,13 @@ use MabeEnumPHPStan\EnumMethodReflection;
 use MabeEnumPHPStan\EnumMethodsClassReflectionExtension;
 use MabeEnum\PHPStan\tests\assets\NotAnEnum;
 use MabeEnum\PHPStan\tests\assets\VisibilityEnum;
+use PHPStan\Reflection\ReflectionProvider;
 use PHPStan\Testing\PHPStanTestCase;
 
 class EnumMethodsClassReflectionExtensionTest extends PHPStanTestCase
 {
-    /**
-     * @var \PHPStan\Reflection\ReflectionProvider
-     */
-    protected $reflectionProvider;
-
-    /**
-     * @var EnumMethodsClassReflectionExtension
-     */
-    protected $extension;
+    protected ReflectionProvider $reflectionProvider;
+    protected EnumMethodsClassReflectionExtension $extension;
 
     public function setUp(): void
     {

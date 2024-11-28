@@ -15,7 +15,6 @@ class EnumMethodsClassReflectionExtension implements MethodsClassReflectionExten
             return false;
         }
 
-        /** @var string|Enum $class */
         $class = $classReflection->getName();
         return array_key_exists($methodName, $class::getConstants());
     }

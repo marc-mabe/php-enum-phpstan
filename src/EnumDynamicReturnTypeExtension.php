@@ -23,26 +23,26 @@ class EnumDynamicReturnTypeExtension implements DynamicStaticMethodReturnTypeExt
      *
      * @var array<string, callable>
      */
-    private $objectMethods = [];
+    private array $objectMethods = [];
 
     /**
      * Map supported static method to a callable function detecting return type
      *
      * @var array<string, callable>
      */
-    private $staticMethods = [];
+    private array $staticMethods = [];
 
     /**
      * Buffer of all types of enumeration values
      * @phpstan-var array<class-string<Enum>, Type[]>
      */
-    private $enumValueTypesBuffer = [];
+    private array $enumValueTypesBuffer = [];
 
     /**
      * Buffer of all types of enumeration ordinals
      * @phpstan-var array<class-string<Enum>, Type[]>
      */
-    private $enumOrdinalTypesBuffer = [];
+    private array $enumOrdinalTypesBuffer = [];
 
     public function __construct()
     {
@@ -50,11 +50,9 @@ class EnumDynamicReturnTypeExtension implements DynamicStaticMethodReturnTypeExt
             return $this->detectGetValueReturnType($class);
         };
 
-        if (method_exists(Enum::class, 'getvalues')) {
-            $this->staticMethods['getvalues'] = function (string $class) {
-                return $this->detectGetValuesReturnType($class);
-            };
-        }
+        $this->staticMethods['getvalues'] = function (string $class) {
+            return $this->detectGetValuesReturnType($class);
+        };
 
         // static methods can be called like object methods
         $this->objectMethods = array_merge($this->objectMethods, $this->staticMethods);
@@ -87,7 +85,11 @@ class EnumDynamicReturnTypeExtension implements DynamicStaticMethodReturnTypeExt
         // The call class is not a name
         // E.g. an expression on $enumClass::getValues()
         if (!$callClass instanceof Name) {
-            return ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())->getReturnType();
+            return ParametersAcceptorSelector::selectFromArgs(
+                $scope,
+                $staticCall->getArgs(),
+                $methodReflection->getVariants()
+            )->getReturnType();
         }
 
         $callClassName = $callClass->toString();
@@ -95,7 +97,11 @@ class EnumDynamicReturnTypeExtension implements DynamicStaticMethodReturnTypeExt
         // Can't detect possible types on static::*()
         // as it depends on defined enumerators of unknown inherited classes
         if ($callClassName === 'static') {
-            return ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())->getReturnType();
+            return ParametersAcceptorSelector::selectFromArgs(
+                $scope,
+                $staticCall->getArgs(),
+                $methodReflection->getVariants()
+            )->getReturnType();
         }
 
         if ($callClassName === 'self') {

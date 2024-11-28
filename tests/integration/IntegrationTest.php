@@ -1,28 +1,21 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace MabeEnum\PHPStan\tests\integration;
 
-use MabeEnum\Enum;
 use PHPStan\Testing\LevelsTestCase;
 
 final class IntegrationTest extends LevelsTestCase
 {
-
     /**
      * @return string[][]
      */
-    public function dataTopics(): array
+    public static function dataTopics(): array
     {
-        $dataTopics = [
+        return [
             ['EnumMethodsClassReflection'],
             ['EnumGetValueReturnType'],
+            ['EnumGetValuesReturnType'],
         ];
-
-        if (method_exists(Enum::class, 'getValues')) {
-            $dataTopics[] = ['EnumGetValuesReturnType'];
-        }
-
-        return $dataTopics;
     }
 
     public function getDataPath(): string
