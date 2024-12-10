@@ -1,6 +1,4 @@
 # PHPStan extension for php-enum
-[![Build Status](https://github.com/marc-mabe/php-enum-phpstan/workflows/Test/badge.svg?branch=master)](https://github.com/marc-mabe/php-enum-phpstan/actions?query=workflow%3ATests%20branch%3Amaster)
-[![Code Coverage](https://codecov.io/github/marc-mabe/php-enum-phpstan/coverage.svg?branch=master)](https://codecov.io/gh/marc-mabe/php-enum-phpstan/branch/master/)
 [![License](https://poser.pugx.org/marc-mabe/php-enum-phpstan/license)](https://github.com/marc-mabe/php-enum-phpstan/blob/master/LICENSE.txt)
 [![Latest Stable](https://img.shields.io/packagist/v/marc-mabe/php-enum-phpstan)](https://packagist.org/packages/marc-mabe/php-enum-phpstan)
 
